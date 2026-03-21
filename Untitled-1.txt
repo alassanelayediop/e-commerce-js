@@ -1,0 +1,162 @@
+const express = require("express");
+const mysql = require("mysql2");
+const app = express();
+const cors = require("cors"); // Middleware pour gérer les CORS
+const port = 8081;
+
+// Middleware pour utiliser CORS
+app.use(cors()); // Permettre les requêtes de n'importe quelle origine (texte en bas)
+
+// Middleware pour les requêtes JSON
+app.use(express.json());
+
+// Connexion à MySQL
+const db = mysql.createConnection({
+    host: "localhost",
+    user: "root", // Nom d'utilisateur du MySQL
+    password: "",
+    database: "pieces_autos"
+});
+
+// Connexion à la base de données
+db.connect(err => {
+    if (err) {
+        console.error("Erreur de connexion à MySQL:", err);
+        return;
+    }
+    console.log("Connecté à la base de données MySQL");
+});
+
+// Route pour récupérer toutes les pièces
+app.get("/pieces", (req, res) => {
+    db.query("SELECT * FROM pieces", (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(results);
+    });
+});
+
+// Route pour ajouter une nouvelle pièce
+app.post("/pieces", (req, res) => {
+    const { nom, prix, categorie, image, description, disponibilite } = req.body;
+    db.query("INSERT INTO pieces (nom, prix, categorie, image, description, disponibilite) VALUES (?, ?, ?, ?, ?, ?)",
+        [nom, prix, categorie, image, description, disponibilite], 
+        (err, result) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ message: "Pièce ajoutée avec succès", id: result.insertId });
+        });
+});
+
+// Route pour récupérer les avis
+app.get("/avis", (req, res) => {
+    db.query("SELECT * FROM avis", (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(results);
+    });
+});
+
+// Route pour ajouter un avis sur une pièce
+app.post("/avis", (req, res) => {
+    const { piece_id, utilisateur, commentaire, nbEtoiles } = req.body;
+    db.query("INSERT INTO avis (pieceId, utilisateur, commentaire, nbEtoiles) VALUES (?, ?, ?, ?)", 
+        [piece_id, utilisateur, commentaire, nbEtoiles],
+        (err, result) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ message: "Avis ajouté avec succès", id: result.insertId });
+        });
+        console.log("Données reçues :", req.body);
+});
+
+// Démarrer le serveur
+app.listen(port, () => {
+    console.log(`Serveur API démarré sur http://localhost:${port}`);
+});
+
+/*
+Le CORS (Cross-Origin Resource Sharing) est un mécanisme de sécurité des navigateurs qui limite les requêtes entre différentes origines (domaines, protocoles ou ports). Il permet à un serveur de contrôler quelles origines externes peuvent accéder à ses ressources, tout en respectant la politique Same-Origin (qui bloque par défaut les requêtes cross-origin non autorisées).
+*/
+
+// pieces.js
+// Code de gestion du formulaire d'ajout de pièce
+document.addEventListener("DOMContentLoaded", () => {
+    // Formulaire d'ajout de pièce
+    const formAjoutPiece = document.getElementById("form-ajout-piece");
+
+    if (formAjoutPiece) {
+        formAjoutPiece.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(formAjoutPiece);
+            const jsonData = Object.fromEntries(formData.entries());
+
+            jsonData.disponibilite = jsonData.disponibilite === "1"; // Convertir en booléen
+
+            try {
+                const response = await fetch("http://localhost:8081/pieces", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(jsonData),
+                });
+
+                if (response.ok) {
+                    alert("Pièce ajoutée avec succès !");
+                    location.reload(); // Recharger la page pour afficher la mise à jour
+                } else {
+                    alert("Erreur lors de l'ajout de la pièce.");
+                }
+            } catch (error) {
+                console.error("Erreur:", error);
+                alert("Impossible d'envoyer la requête.");
+            }
+        });
+    }
+});
+
+// Formualire d'ajout des pieces
+<!-- Modal pour ajouter une pièce -->
+<div class="modal fade" id="modalAjoutPiece" tabindex="-1" aria-labelledby="modalAjoutPieceLabel" aria-hidden="true">
+	<form id="form-ajout-piece" class="text-black">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="modalAjoutPieceLabel">Ajout d'une pièce</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="mb-3">
+						<label class="form-label">Nom de la pièce</label>
+						<input type="text" class="form-control" name="nom" required>
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Prix</label>
+						<input type="number" class="form-control" name="prix" required>
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Catégorie</label>
+						<input type="text" class="form-control" name="categorie">
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Image (URL)</label>
+						<input type="text" class="form-control" name="image">
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Description</label>
+						<textarea class="form-control" name="description"></textarea>
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Disponible</label>
+						<select class="form-control" name="disponibilite">
+							<option value="1">Oui</option>
+							<option value="0">Non</option>
+						</select>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="reset" class="btn text-black">Annuler</button>
+					<button type="submit" class="btn text-black">Ajouter</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,71 @@
+.topbar {
+    background: #1a1a1a;
+    color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.topbar .brand {
+    color: #e65c00;
+    font-weight: 800;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.topbar .brand img {
+    height: 36px;
+    border-radius: 6px;
+}
+
+.topbar .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.topbar a.nav-btn {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 6px 14px;
+    border: 1px solid #444;
+    border-radius: 20px;
+    transition: all .2s;
+}
+
+.topbar a.nav-btn:hover {
+    border-color: #e65c00;
+    color: #e65c00;
+}
+
+.topbar #nav-user {
+    color: #e65c00;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.topbar a.nav-btn.btn-panier {
+    background: #e65c00;
+    border-color: #e65c00;
+    color: #fff;
+    position: relative;
+}
+
+#panier-badge {
+    background: #fff;
+    color: #e65c00;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 1px 6px;
+    border-radius: 10px;
+    margin-left: 4px;
+    display: none;
+}

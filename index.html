@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Les Bonnes Pièces</title>
+    <link href="images/logo-les-bonnes-pieces.png" rel="icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="index.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module" src="pieces.js" defer></script>
+    </style>
+</head>
+<body>
+    <!-- ─── Barre de navigation ──────────────────────────────────────── -->
+    <div class="topbar">
+        <a href="index.html" class="brand">
+            <img src="images/logo-les-bonnes-pieces.png" alt="Logo">
+            Les Bonnes Pièces
+        </a>
+        <div class="nav-actions">
+            <span id="nav-user" style="display:none"></span>
+            <a href="login.html"  id="nav-login"  class="nav-btn">🔑 Connexion</a>
+            <a href="commandes.html" id="nav-commandes" class="nav-btn" style="display:none">📦 Mes commandes</a>
+            <a href="#" id="nav-panier" class="nav-btn btn-panier" style="display:none"
+               data-bs-toggle="modal" data-bs-target="#modalPanier">
+                🛒 Panier<span id="panier-badge">0</span>
+            </a>
+            <a href="#" id="nav-logout" class="nav-btn" style="display:none" onclick="window.doLogout()">🚪 Déconnexion</a>
+        </div>
+    </div>
+
+    <main>
+        <!-- Filtres -->
+        <section class="filtres">
+            <h3>Filtres</h3>
+            <button class="bton btn-trier">Trier par prix croissant</button><br>
+            <button class="bton btn-filtrer">Filtrer les pièces abordables</button><br>
+            <button class="bton btn-decroissant">Trier par prix décroissant</button><br>
+            <button class="bton btn-desc">Filtrer les pièces sans description</button><br>
+            <button class="bton btn-disponibles">Afficher les pièces disponibles</button><br>
+            <p class="mt-4">Pièces dispo selon la barre de progression :</p>
+            <div style="display:flex">
+                <input type="range" name="prix-max" id="prix-max" class="form-range w-50" min="5" max="400" step="5">
+                <div class="ms-2"><span id="valeur-range">0</span> €</div>
+            </div><br>
+            <button type="button" class="btn btn-primary bton" data-bs-toggle="modal" data-bs-target="#modalAjoutPiece">
+                Ajouter une pièce
+            </button><br>
+            <h3>Données</h3>
+            <button class="bton btn-update">Mettre à jour les pièces</button>
+        </section>
+
+        <!-- Fiches produits -->
+        <section class="fiches">
+            <div>
+                <div class="abordables"></div>
+                <div class="disponibles"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p class="text-center mt-3">Les Bonnes Pièces 2025 — Dakar, Sénégal</p>
+    </footer>
+
+    <!-- ─── Modal Ajouter une pièce ────────────────────────────────────── -->
+    <div class="modal fade" id="modalAjoutPiece" tabindex="-1" aria-hidden="true">
+        <form id="form-ajout-piece" class="text-black">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Ajout d'une pièce</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3"><label class="form-label">Nom</label><input type="text" class="form-control" name="nom" required></div>
+                        <div class="mb-3"><label class="form-label">Prix</label><input type="number" class="form-control" name="prix" required></div>
+                        <div class="mb-3"><label class="form-label">Catégorie</label><input type="text" class="form-control" name="categorie"></div>
+                        <div class="mb-3"><label class="form-label">Image (URL)</label><input type="text" class="form-control" name="image"></div>
+                        <div class="mb-3"><label class="form-label">Description</label><textarea class="form-control" name="description"></textarea></div>
+                        <div class="mb-3">
+                            <label class="form-label">Disponible</label>
+                            <select class="form-control" name="disponibilite">
+                                <option value="1">Oui</option>
+                                <option value="0">Non</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="reset"  class="btn text-black">Annuler</button>
+                        <button type="submit" class="btn text-black">Ajouter</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- ─── Modal Panier ────────────────────────────────────────────────── -->
+    <div class="modal fade" id="modalPanier" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="background:#1a1a1a; color:#fff">
+                    <h5 class="modal-title">🛒 Mon Panier</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="panier-contenu"></div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Continuer les achats</button>
+                    <button class="btn text-white" id="btn-commander"
+                            style="background:#e65c00;display:none" onclick="window.doCommander()">
+                        ✅ Commander
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
