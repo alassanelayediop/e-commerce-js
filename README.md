@@ -49,15 +49,18 @@ Ouvre `index.html` dans le navigateur (ou utilise Live Server sur VS Code).
 
 ## 📁 Structure du projet
 ```
-├── server.js          # API REST (Express)
-├── index.html         # Page catalogue principale
-├── login.html         # Page connexion / inscription
-├── commandes.html     # Historique des commandes
-├── pieces.js          # Logique principale frontend
-├── functions.js       # Génération des cartes pièces
-├── panier.js          # Gestion du panier
-├── auth.js            # Authentification frontend
-├── avis.js            # Gestion des avis
-├── styles.css         # Styles
-└── files_v2.sql       # Schéma BDD complet
+├── server.js                    # API REST (Express)
+├── index.html                   # Page catalogue principale
+├── login.html                   # Page connexion / inscription
+├── commandes                    # Historique des commandes
+    ├── commandes.html           # Page historique des commandes
+    ├── commandes.css            # Styles
+    ├── commandes.js             # Gestion des commandes
+├── pieces.js                    # Logique principale frontend
+├── functions.js                 # Génération des cartes pièces
+├── panier.js                    # Gestion du panier
+├── auth.js                      # Authentification frontend
+├── avis.js                      # Gestion des avis
+├── styles.css                   # Styles
+└── files_v2.sql                 # Schéma BDD complet
 ```
